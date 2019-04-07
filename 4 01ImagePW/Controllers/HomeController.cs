@@ -13,7 +13,7 @@ namespace _4_01ImagePW.Controllers
     public class HomeController : Controller
     {
         Manager mgr = new Manager(Properties.Settings.Default.Constr);
-         List<string> correct = new List<string>();
+        List<string> correct;
         ViewModel vm = new ViewModel();
         public ActionResult Index()
         {
@@ -40,18 +40,12 @@ namespace _4_01ImagePW.Controllers
             if (TempData["Message"] != null)
             {
                 vm.Message = (string)TempData["Message"];
+            }            
+            if (correct==null)
+            {
+                correct = new List<string>();
             }
-
-            //if (password == null && (Session["CorrectPasswords"] == null || fromSession.FirstOrDefault(c => c == password) == "1"))
-            //{
-            //    return View(new Images { Id = image });
-            //}
-            //HttpCookie fromRequest = Request.Cookies["Visited"];
-            //if (fromRequest != null && int.Parse(fromRequest.ToString()) == image)
-            //{
-            //    vm.ViewImage = true;
-            //}
-           Images Current = mgr.Get(image);
+            Images Current = mgr.Get(image);
             var fromSession = (List<string>)Session["CorrectPasswords"];
             if (password != null)
             {
@@ -67,8 +61,9 @@ namespace _4_01ImagePW.Controllers
                 vm.ViewImage = true;
             }
                      
-            correct.Add(password);
+            
             Session["CorrectPasswords"] = correct;
+            correct.Add(password);
             mgr.SetTimesViewed(image);
             vm.ImageCurrent = Current;
             vm.ImageCurrent.TimesViewed = mgr.GetTimes(image);
